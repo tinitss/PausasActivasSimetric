@@ -1,7 +1,7 @@
 import tkinter as tk
 import customtkinter
 from datetime import datetime
-from ejercicios.ejercicios import abdomen
+from ejercicios.ejercicios import ejercicioss
 
 
 customtkinter.set_appearance_mode("System") 
@@ -48,10 +48,17 @@ class FormularioInfoDesign(tk.Frame):
         tk.Label(self, textvariable=mensaje).pack(pady=20)
 
         def aceptar():
-            if ejercicio_seleccionado.get() == "Pausas saludables - Abdomen y espalda":
-                self.maestro.limpiar_panel(self.panel_principal)  
-                ejercicio_abdomen = abdomen(self.panel_principal)  
+            seleccion = ejercicio_seleccionado.get()
+            self.maestro.limpiar_panel(self.panel_principal)
+            
+            if seleccion == "Pausas saludables - Abdomen y espalda":
+                ejercicio_abdomen = ejercicioss(self.panel_principal, self.volver_a_formulario, "abdomen")
                 ejercicio_abdomen.pack(fill='both', expand=True)
+
+            elif seleccion == "Pausas saludables - Caderas":
+                ejercicio_cadera = ejercicioss(self.panel_principal, self.volver_a_formulario, "cadera")
+                ejercicio_cadera.pack(fill='both', expand=True)
+
             else:
                 mensaje.set("Seleccione un ejercicio válido para continuar.")
 
@@ -63,5 +70,9 @@ class FormularioInfoDesign(tk.Frame):
         tk.Button(self, text="Cancelar", command=cancelar).pack(pady=10)
 
         self.pack(fill='both', expand=True)
+
+    def volver_a_formulario(self):
+        self.maestro.limpiar_panel(self.panel_principal)
+        self.__init__(self.panel_principal, self.maestro)
 
 

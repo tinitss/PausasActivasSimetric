@@ -15,7 +15,7 @@ class FormularioMaestroDesign(tk.Tk):
         self.Perfil = util_img.leer_imagen("./imagenes/Perfil.png", (100, 100))
         self.Salud = util_img.leer_imagen("./imagenes/Salud.jpg", (100, 100))
         self.config_window()
-        self.prueba()  
+        self.logica()  
 
     def config_window(self):
         self.title("SIMETRIC | PAUSAS ACTIVAS")
@@ -23,7 +23,7 @@ class FormularioMaestroDesign(tk.Tk):
         w, h = 1024, 600
         util_ventana.centrar_ventana(self, w, h)
 
-    def prueba(self):
+    def logica(self):
         def paneles():
             self.barra_superior = tk.Frame(self, bg=COLOR_BARRA_SUPERIOR, height=50)
             self.barra_superior.pack(side=tk.TOP, fill='both')
