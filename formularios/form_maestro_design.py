@@ -15,7 +15,7 @@ class FormularioMaestroDesign(tk.Tk):
         self.Perfil = util_img.leer_imagen("./imagenes/Perfil.png", (100, 100))
         self.Salud = util_img.leer_imagen("./imagenes/Salud.jpg", (100, 100))
         self.config_window()
-        self.prueba()  # Call prueba to setup the UI
+        self.prueba()  
 
     def config_window(self):
         self.title("SIMETRIC | PAUSAS ACTIVAS")
@@ -24,7 +24,6 @@ class FormularioMaestroDesign(tk.Tk):
         util_ventana.centrar_ventana(self, w, h)
 
     def prueba(self):
-        # Nested function for setting up the panels
         def paneles():
             self.barra_superior = tk.Frame(self, bg=COLOR_BARRA_SUPERIOR, height=50)
             self.barra_superior.pack(side=tk.TOP, fill='both')
@@ -35,7 +34,6 @@ class FormularioMaestroDesign(tk.Tk):
             self.cuerpo_principal = tk.Frame(self, bg=COLOR_CUERPO_PRINCIPAL)
             self.cuerpo_principal.pack(side=tk.RIGHT, fill='both', expand=True)
 
-        # Nested function for setting up the upper bar controls
         def controles_barra_superior():
             font_awesome = font.Font(family="FontAwesome", size=12)
 
@@ -51,7 +49,6 @@ class FormularioMaestroDesign(tk.Tk):
             self.labelEmail.config(fg="#fff", font=("Roboto", 10), bg=COLOR_BARRA_SUPERIOR, padx=28, width=20)
             self.labelEmail.pack(side=tk.RIGHT)
 
-        # Nested function for setting up the lateral menu controls
         def controles_menu_lateral():
             ancho_menu = 20
             alto_menu = 2
@@ -63,26 +60,20 @@ class FormularioMaestroDesign(tk.Tk):
             self.buttonPausas = tk.Button(self.menu_lateral)
             self.buttonConfig = tk.Button(self.menu_lateral)
             self.buttonAyuda = tk.Button(self.menu_lateral)
-            #self.buttonInfo = tk.Button(self.menu_lateral)
-            #self.buttonSettings = tk.Button(self.menu_lateral)
 
             buttons_info = [
                 ("Pausas", "\uf109", self.buttonPausas, self.abrir_panel_info),
                 ("Configuración", "\uf007", self.buttonConfig, self.abrir_panel_en_construccion),
                 ("Ayuda", "\uf03e", self.buttonAyuda, self.abrir_panel_graficas)
-                #("Info", "\uf129", self.buttonInfo, self.abrir_panel_info),
-                #("Settings", "\uf013", self.buttonSettings, self.abrir_panel_en_construccion)
             ]
 
             for text, icon, button, comando in buttons_info:
                 self.configurar_boton_menu(button, text, icon, font_awesome, ancho_menu, alto_menu, comando)
 
-        # Nested function for setting up the main body controls
         def controles_cuerpo():
             label = tk.Label(self.cuerpo_principal, image=self.Simetric_logo, bg=COLOR_CUERPO_PRINCIPAL)
             label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        # Call the setup functions
         paneles()
         controles_barra_superior()
         controles_menu_lateral()
@@ -112,11 +103,9 @@ class FormularioMaestroDesign(tk.Tk):
             self.menu_lateral.pack(side=tk.LEFT, fill='y')
 
     def abrir_panel_info(self):
-        # Limpia el panel principal antes de mostrar el nuevo formulario
         self.limpiar_panel(self.cuerpo_principal)
         
-        # Crea una instancia de FormularioInfoDesign y la coloca en el cuerpo principal
-        info_form = FormularioInfoDesign(self.cuerpo_principal)
+        info_form = FormularioInfoDesign(self.cuerpo_principal, maestro=self)
         info_form.pack(fill='both', expand=True)
 
     def abrir_panel_en_construccion(self):
