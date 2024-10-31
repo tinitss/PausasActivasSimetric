@@ -11,17 +11,11 @@ class FormularioMaestroDesign(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        self.Simetric_logo = util_img.leer_imagen("./imagenes/Simetric_logo.jpg", (560,136))
+        self.Simetric_logo = util_img.leer_imagen("./imagenes/Simetric_logo.jpg", (560, 136))
         self.Perfil = util_img.leer_imagen("./imagenes/Perfil.png", (100, 100))
         self.Salud = util_img.leer_imagen("./imagenes/Salud.jpg", (100, 100))
         self.config_window()
-        self.paneles()
-        self.controles_barra_superior()
-        self.controles_menu_lateral()
-        self.controles_cuerpo()
-        self.abrir_panel_info()
-        self.abrir_panel_en_construccion()
-        self.abrir_panel_graficas()
+        self.prueba()  # Call prueba to setup the UI
 
     def config_window(self):
         self.title("SIMETRIC | PAUSAS ACTIVAS")
@@ -29,79 +23,75 @@ class FormularioMaestroDesign(tk.Tk):
         w, h = 1024, 600
         util_ventana.centrar_ventana(self, w, h)
 
-    def paneles(self):
-        self.barra_superior = tk.Frame(
-            self, bg= COLOR_BARRA_SUPERIOR, height=50)
-        self.barra_superior.pack(side=tk.TOP, fill='both')
+    def prueba(self):
+        # Nested function for setting up the panels
+        def paneles():
+            self.barra_superior = tk.Frame(self, bg=COLOR_BARRA_SUPERIOR, height=50)
+            self.barra_superior.pack(side=tk.TOP, fill='both')
 
-        self.menu_lateral = tk.Frame(self, bg=COLOR_MENU_LATERAL, width=150)
-        self.menu_lateral.pack(side=tk.LEFT, fill='both', expand=False)
+            self.menu_lateral = tk.Frame(self, bg=COLOR_MENU_LATERAL, width=150)
+            self.menu_lateral.pack(side=tk.LEFT, fill='both', expand=False)
 
-        self.cuerpo_principal = tk.Frame(
-            self, bg=COLOR_CUERPO_PRINCIPAL) 
-        self.cuerpo_principal.pack(side=tk.RIGHT, fill='both', expand=True)
+            self.cuerpo_principal = tk.Frame(self, bg=COLOR_CUERPO_PRINCIPAL)
+            self.cuerpo_principal.pack(side=tk.RIGHT, fill='both', expand=True)
 
-    def controles_barra_superior(self):
-        font_awesome = font.Font(family="FontAwesome", size=12)
+        # Nested function for setting up the upper bar controls
+        def controles_barra_superior():
+            font_awesome = font.Font(family="FontAwesome", size=12)
 
-        self.labelTitulo = tk.Label(self.barra_superior, text="SIMETRIC")
-        self.labelTitulo.config(fg="#fff", font=(
-            "Roboto", 15), bg=COLOR_BARRA_SUPERIOR, pady=10, width=16)
-        self.labelTitulo.pack(side=tk.LEFT)
+            self.labelTitulo = tk.Label(self.barra_superior, text="SIMETRIC")
+            self.labelTitulo.config(fg="#fff", font=("Roboto", 15), bg=COLOR_BARRA_SUPERIOR, pady=10, width=16)
+            self.labelTitulo.pack(side=tk.LEFT)
 
-        self.buttonMenuLateral = tk.Button(self.barra_superior, text="\uf0c9", font=font_awesome,
-                                            command=self.toggle_panel, bd=0, bg=COLOR_BARRA_SUPERIOR, fg="white")
-        self.buttonMenuLateral.pack(side=tk.LEFT)
+            self.buttonMenuLateral = tk.Button(self.barra_superior, text="\uf0c9", font=font_awesome,
+                                                command=self.toggle_panel, bd=0, bg=COLOR_BARRA_SUPERIOR, fg="white")
+            self.buttonMenuLateral.pack(side=tk.LEFT)
 
-        self.labelTitulo = tk.Label(
-            self.barra_superior, text="atencionalcliente@simetric.com.co")
-        self.labelTitulo.config(fg="#fff", font=(
-            "Roboto", 10), bg=COLOR_BARRA_SUPERIOR, padx=28, width=20)
-        self.labelTitulo.pack(side=tk.RIGHT)
+            self.labelEmail = tk.Label(self.barra_superior, text="atencionalcliente@simetric.com.co")
+            self.labelEmail.config(fg="#fff", font=("Roboto", 10), bg=COLOR_BARRA_SUPERIOR, padx=28, width=20)
+            self.labelEmail.pack(side=tk.RIGHT)
 
-    def controles_menu_lateral(self):
-        ancho_menu = 20
-        alto_menu = 2
-        font_awesome = font.Font(family="FontAwesome", size=15)
+        # Nested function for setting up the lateral menu controls
+        def controles_menu_lateral():
+            ancho_menu = 20
+            alto_menu = 2
+            font_awesome = font.Font(family="FontAwesome", size=15)
 
-        self.labelPerfil = tk.Label(
-            self.menu_lateral, image=self.Perfil, bg=COLOR_MENU_LATERAL)
-        self.labelPerfil.pack(side=tk.TOP, pady=10)
-    
-        """ #INVOCAR LA LÓGICA DEL PROGRAMA
-        self.buttonPausasActivas = tk.Button(self.menu_lateral, text="Pausas Activas",
-                                              command=lambda: mostrar_popup(self))  # Llama a mostrar_popup
-        self.buttonPausasActivas.pack(side=tk.TOP, pady=10)
-        """
+            self.labelPerfil = tk.Label(self.menu_lateral, image=self.Perfil, bg=COLOR_MENU_LATERAL)
+            self.labelPerfil.pack(side=tk.TOP, pady=10)
 
-        self.buttonDashBoard = tk.Button(self.menu_lateral)
-        self.buttonProfile = tk.Button(self.menu_lateral)
-        self.buttonPicture = tk.Button(self.menu_lateral)
-        self.buttonInfo = tk.Button(self.menu_lateral)
-        self.buttonSettings = tk.Button(self.menu_lateral)
+            self.buttonPausas = tk.Button(self.menu_lateral)
+            self.buttonConfig = tk.Button(self.menu_lateral)
+            self.buttonAyuda = tk.Button(self.menu_lateral)
+            #self.buttonInfo = tk.Button(self.menu_lateral)
+            #self.buttonSettings = tk.Button(self.menu_lateral)
 
-        buttons_info = [
-            ("Gráficas", "\uf109", self.buttonDashBoard,self.abrir_panel_graficas),
-            ("Perfil", "\uf007", self.buttonProfile,self.abrir_panel_en_construccion),
-            ("Pausas", "\uf03e", self.buttonPicture,self.abrir_panel_info),
-            ("Info", "\uf129", self.buttonInfo,self.abrir_panel_info),
-            ("Settings", "\uf013", self.buttonSettings,self.abrir_panel_en_construccion)
-        ]
+            buttons_info = [
+                ("Pausas", "\uf109", self.buttonPausas, self.abrir_panel_info),
+                ("Configuración", "\uf007", self.buttonConfig, self.abrir_panel_en_construccion),
+                ("Ayuda", "\uf03e", self.buttonAyuda, self.abrir_panel_graficas)
+                #("Info", "\uf129", self.buttonInfo, self.abrir_panel_info),
+                #("Settings", "\uf013", self.buttonSettings, self.abrir_panel_en_construccion)
+            ]
 
-        for text, icon, button, comando in buttons_info:
-            self.configurar_boton_menu(button, text, icon, font_awesome, ancho_menu, alto_menu, comando)
+            for text, icon, button, comando in buttons_info:
+                self.configurar_boton_menu(button, text, icon, font_awesome, ancho_menu, alto_menu, comando)
 
+        # Nested function for setting up the main body controls
+        def controles_cuerpo():
+            label = tk.Label(self.cuerpo_principal, image=self.Simetric_logo, bg=COLOR_CUERPO_PRINCIPAL)
+            label.place(x=0, y=0, relwidth=1, relheight=1)
 
-
-    def controles_cuerpo(self):
-        label = tk.Label(self.cuerpo_principal, image=self.Simetric_logo,
-                         bg=COLOR_CUERPO_PRINCIPAL)
-        label.place(x=0, y=0, relwidth=1, relheight=1)
+        # Call the setup functions
+        paneles()
+        controles_barra_superior()
+        controles_menu_lateral()
+        controles_cuerpo()
 
     def configurar_boton_menu(self, button, text, icon, font_awesome, ancho_menu, alto_menu, comando):
         button.config(text=f" {icon}  {text}", anchor="w", font=font_awesome,
                       bd=0, bg=COLOR_MENU_LATERAL, fg="white", width=ancho_menu, height=alto_menu,
-                      command = comando)
+                      command=comando)
         button.pack(side=tk.TOP)
         self.bind_hover_events(button)
 
@@ -122,12 +112,17 @@ class FormularioMaestroDesign(tk.Tk):
             self.menu_lateral.pack(side=tk.LEFT, fill='y')
 
     def abrir_panel_info(self):
-        FormularioInfoDesign(self)
+        # Limpia el panel principal antes de mostrar el nuevo formulario
+        self.limpiar_panel(self.cuerpo_principal)
+        
+        # Crea una instancia de FormularioInfoDesign y la coloca en el cuerpo principal
+        info_form = FormularioInfoDesign(self.cuerpo_principal)
+        info_form.pack(fill='both', expand=True)
 
     def abrir_panel_en_construccion(self):
         self.limpiar_panel(self.cuerpo_principal)
         FormularioSitioConstruccionDesign(self.cuerpo_principal, self.Salud)
-    
+
     def abrir_panel_graficas(self):
         self.limpiar_panel(self.cuerpo_principal)
         FormularioGraficasDesign(self.cuerpo_principal)
@@ -135,4 +130,3 @@ class FormularioMaestroDesign(tk.Tk):
     def limpiar_panel(self, panel):
         for widget in panel.winfo_children():
             widget.destroy()
-
