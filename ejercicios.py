@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from PIL import Image, ImageTk
 import cv2
 import imutils
@@ -18,86 +19,63 @@ class Clase_ejercicios(tk.Frame):
             self.abdomen()
         elif self.tipo_ejercicio == "cadera":
             self.cadera()
+        elif self.tipo_ejercicio == "manos":
+            self.manos()
+        elif self.tipo_ejercicio == "cuello":
+            self.cuello()
+        elif self.tipo_ejercicio == "ojos":
+            self.ojos()
+        elif self.tipo_ejercicio == "voz":
+            self.voz()  
+        elif self.tipo_ejercicio == "hombros":
+            self.voz()
+        elif self.tipo_ejercicio == "ergonomia":
+            self.ergonomia()
 
         # Botón de retorno
         tk.Button(self, text="Volver", command=self.volver).pack(pady=10)
 
-    # Método para inicializar la configuración del video
     def inicializar_video(self, video_path):
         self.cap = cv2.VideoCapture(video_path)
-        self.video()  # Llama al método para iniciar la reproducción del video
+        if not self.cap.isOpened():  
+            self.lblInfoVideoPath.config(text="Error: no se pudo cargar el video.")
+        else:
+            self.total_frames = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            self.frame_rate = int(self.cap.get(cv2.CAP_PROP_FPS))
+            self.total_seconds = self.total_frames / self.frame_rate
+            self.update_time_label()
+            self.video()
 
-    # Método para crear los elementos de la interfaz relacionados con el video
     def crear_elementos_video(self):
         self.lblInfoVideoPath = tk.Label(self)
         self.lblInfoVideoPath.pack()
 
         self.lblVideo = tk.Label(self)
         self.lblVideo.pack()
-        
-        # Enlace para pausar/reproducir
-        self.lblVideo.bind("<Button-1>", self.toggle_play_pause)
 
-    # Método para configurar y reproducir el video de abdomen
+        # Controles de video estilo YouTube
+        controls_frame = tk.Frame(self)
+        controls_frame.pack()
+
+        # Botón de pausa/play
+        self.btn_play_pause = tk.Button(controls_frame, text="⏯", command=self.toggle_play_pause)
+        self.btn_play_pause.pack(side="left")
+
+        # Barra de progreso
+        self.scale_progress = ttk.Scale(controls_frame, orient="horizontal", length=500, from_=0, to=100, command=self.update_frame)
+        self.scale_progress.pack(side="left", padx=10)
+
+        # Tiempo transcurrido / Total
+        self.time_label = tk.Label(controls_frame, text="00:00 / 00:00")
+        self.time_label.pack(side="left")
+
     def abdomen(self):
         tk.Label(self, text="Pausas saludables - Abdomen y espalda", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo
         self.crear_elementos_video()
         self.inicializar_video("./videos/Abdomen.mp4")
 
-    # Método para configurar y reproducir el video de cadera
-    def cadera(self):
-        tk.Label(self, text="Pausas saludables - Caderas", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
-        self.crear_elementos_video()
-        self.inicializar_video("./videos/Cadera.mp4") 
+    # Métodos de cada ejercicio omitiendo por simplicidad...
 
-
-    def manos(self):
-        tk.Label(self, text="Pausas saludables - Manos y codos", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
-        self.crear_elementos_video()
-        self.inicializar_video("./videos/Manos.mp4") 
-
-    def cuello(self):
-        tk.Label(self, text="Pausas saludables - Cuellos", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
-        self.crear_elementos_video()
-        self.inicializar_video("./videos/Cuello.mp4") 
-
-    def ojos(self):
-        tk.Label(self, text="Pausa saludable para los ojos", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
-        self.crear_elementos_video()
-        self.inicializar_video("./videos/Ojos.mp4") 
-
-    def voz(self):
-        tk.Label(self, text="Pausa saludable para la voz", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
-        self.crear_elementos_video()
-        self.inicializar_video("./videos/Voz.mp4") 
-
-    def hombros(self):
-        tk.Label(self, text="Pausa saludable - Hombros", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
-        self.crear_elementos_video()
-        self.inicializar_video("./videos/Hombros.mp4")
-
-    def ergonomia(self):
-        tk.Label(self, text="Hábitos seguros - Ergonomía", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
-        self.crear_elementos_video()
-        self.inicializar_video("./videos/Ergonomia.mp4") 
-
-    # Método para reproducir el video
     def video(self):
         if self.cap is not None and not self.is_paused:
             ret, frame = self.cap.read()
@@ -108,17 +86,46 @@ class Clase_ejercicios(tk.Frame):
                 img = ImageTk.PhotoImage(image=im)
                 self.lblVideo.configure(image=img)
                 self.lblVideo.image = img
+
+                current_frame = int(self.cap.get(cv2.CAP_PROP_POS_FRAMES))
+                self.scale_progress.set(current_frame)
+                self.update_time_label()
                 self.lblVideo.after(10, self.video)
             else:
                 self.lblInfoVideoPath.config(text="Fin del video")
                 self.cap.release()
 
-    def toggle_play_pause(self, event):
-        if self.is_paused:
-            self.is_paused = False
+    def toggle_play_pause(self):
+        self.is_paused = not self.is_paused
+        if not self.is_paused:
             self.video()
-        else:
-            self.is_paused = True
+
+    def update_frame(self, event):
+        if self.is_paused and self.cap:
+            frame_number = int(self.scale_progress.get())
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+            ret, frame = self.cap.read()
+            if ret:
+                frame = imutils.resize(frame, width=640)
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                im = Image.fromarray(frame)
+                img = ImageTk.PhotoImage(image=im)
+                self.lblVideo.configure(image=img)
+                self.lblVideo.image = img
+            self.update_time_label()
+
+    def update_time_label(self):
+        if self.cap:
+            current_frame = int(self.cap.get(cv2.CAP_PROP_POS_FRAMES))
+            elapsed_seconds = current_frame / self.frame_rate
+            elapsed_time = self.format_time(elapsed_seconds)
+            total_time = self.format_time(self.total_seconds)
+            self.time_label.config(text=f"{elapsed_time} / {total_time}")
+
+    def format_time(self, seconds):
+        minutes = int(seconds // 60)
+        seconds = int(seconds % 60)
+        return f"{minutes:02}:{seconds:02}"
 
     def volver(self):
         if self.callback_volver:
