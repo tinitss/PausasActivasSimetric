@@ -1,8 +1,8 @@
 import tkinter as tk
 import customtkinter
 from datetime import datetime
-from ejercicios.ejercicios import ejercicioss
-
+from ejercicios import Clase_ejercicios
+from omitir import omitir
 
 customtkinter.set_appearance_mode("System") 
 
@@ -13,9 +13,7 @@ class FormularioInfoDesign(tk.Frame):
         self.maestro = maestro
         self.crear_interfaz()
         
-
     def crear_interfaz(self):
-        # Título de la ventana de pausas activas
         tk.Label(self, text="PAUSAS ACTIVAS", font=("Trebuchet MS", 30)).pack(pady=1)
 
         # Hora de inicio
@@ -23,12 +21,6 @@ class FormularioInfoDesign(tk.Frame):
         hora_inicio = tk.Label(self, text=datetime.now().strftime("%H:%M") + " AM")
         hora_inicio.pack(pady=10)
 
-        # Hora de fin
-        #tk.Label(self, text="Hora de fin:").pack(pady=10)
-        #hora_fin = tk.Entry(self)
-        #zhora_fin.pack(pady=10)
-
-        # Ejercicios
         ejercicios = [
             "Pausas saludables - Abdomen y espalda",
             "Pausas saludables - Caderas",
@@ -40,39 +32,55 @@ class FormularioInfoDesign(tk.Frame):
             "Hábitos seguros - Ergonomía"
         ]
 
-        ejercicio_seleccionado = tk.StringVar(value="Selecciona un ejercicio:")
-        tk.OptionMenu(self, ejercicio_seleccionado, *ejercicios).pack(pady=10)
+        self.ejercicio_seleccionado = tk.StringVar(value="Selecciona un ejercicio:")
+        tk.OptionMenu(self, self.ejercicio_seleccionado, *ejercicios).pack(pady=10)
 
-        mensaje = tk.StringVar()
-        mensaje.set("Por favor, presiona 'Aceptar' para comenzar.")
-        tk.Label(self, textvariable=mensaje).pack(pady=20)
+        self.mensaje = tk.StringVar()
+        self.mensaje.set("Por favor, presiona 'Aceptar' para comenzar.")
+        tk.Label(self, textvariable=self.mensaje).pack(pady=20)
 
-        def aceptar():
-            seleccion = ejercicio_seleccionado.get()
-            self.maestro.limpiar_panel(self.panel_principal)
-            
-            if seleccion == "Pausas saludables - Abdomen y espalda":
-                ejercicio_abdomen = ejercicioss(self.panel_principal, self.volver_a_formulario, "abdomen")
-                ejercicio_abdomen.pack(fill='both', expand=True)
-
-            elif seleccion == "Pausas saludables - Caderas":
-                ejercicio_cadera = ejercicioss(self.panel_principal, self.volver_a_formulario, "cadera")
-                ejercicio_cadera.pack(fill='both', expand=True)
-
-            else:
-                mensaje.set("Seleccione un ejercicio válido para continuar.")
-
-        def cancelar():
-            mensaje.set("VAS A SALIR DEL SISTEMA")
-
-
-        tk.Button(self, text="Aceptar", command=aceptar).pack(pady=10)
-        tk.Button(self, text="Cancelar", command=cancelar).pack(pady=10)
+        tk.Button(self, text="Iniciar", command=self.aceptar).pack(pady=10)
+        tk.Button(self, text="Omitir", command=self.omitirr).pack(pady=10)
 
         self.pack(fill='both', expand=True)
+
+    def aceptar(self):
+        seleccion = self.ejercicio_seleccionado.get()
+
+        # Verifica si se seleccionó un ejercicio
+        if seleccion == "Selecciona un ejercicio:":
+            self.mensaje.set("Es obligatorio seleccionar un ejercicio.")
+            return  # Mantiene al usuario en la misma ventana
+
+        # Limpia el panel principal
+        self.maestro.limpiar_panel(self.panel_principal)
+
+        # Diccionario que mapea los ejercicios a sus respectivos tipos y a la clase
+        ejercicios_dict = {
+            "Pausas saludables - Abdomen y espalda": ("abdomen", Clase_ejercicios),
+            "Pausas saludables - Caderas": ("cadera", Clase_ejercicios),
+            "Pausas saludables - Manos y codos": ("manos", Clase_ejercicios),
+            "Pausas saludables - Cuello": ("cuello", Clase_ejercicios),
+            "Pausa saludable para los ojos": ("ojos", Clase_ejercicios),
+            "Pausa saludable para la voz": ("voz", Clase_ejercicios),
+            "Pausa saludable - Hombros": ("hombros", Clase_ejercicios),
+            "Hábitos seguros - Ergonomía": ("ergonomia", Clase_ejercicios)
+        }
+
+        # Obtiene el tipo de ejercicio y la clase del diccionario
+        tipo_ejercicio, clase_ejercicio = ejercicios_dict.get(seleccion, (None, None))
+
+        if tipo_ejercicio:  # Verifica si el tipo de ejercicio existe
+            ejercicio = clase_ejercicio(self.panel_principal, self.volver_a_formulario, tipo_ejercicio)
+            ejercicio.pack(fill='both', expand=True)
+        else:
+            self.mensaje.set("Selecciona un ejercicio válido.")
+
+    def omitirr(self):
+        self.maestro.limpiar_panel(self.panel_principal)
+        omitir_panel = omitir(self.panel_principal, self.volver_a_formulario)
+        omitir_panel.pack(fill='both', expand=True)
 
     def volver_a_formulario(self):
         self.maestro.limpiar_panel(self.panel_principal)
         self.__init__(self.panel_principal, self.maestro)
-
-

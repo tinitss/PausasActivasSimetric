@@ -119,3 +119,4 @@ class FormularioMaestroDesign(tk.Tk):
     def limpiar_panel(self, panel):
         for widget in panel.winfo_children():
             widget.destroy()
+    
