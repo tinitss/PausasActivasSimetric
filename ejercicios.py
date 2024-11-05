@@ -26,7 +26,7 @@ class Clase_ejercicios(tk.Frame):
         elif self.tipo_ejercicio == "voz":
             self.voz()  
         elif self.tipo_ejercicio == "hombros":
-            self.voz()
+            self.hombros()
         elif self.tipo_ejercicio == "ergonomia":
             self.ergonomia()
 

@@ -21,7 +21,6 @@ class FormularioMaestroDesign(tk.Tk):
         self.title("SIMETRIC | PAUSAS ACTIVAS")
         self.iconbitmap("./imagenes/Simetric_logo.ico")
         w, h = 1024, 600
-        util_ventana.centrar_ventana(self, w, h)
 
     def logica(self):
         def paneles():
