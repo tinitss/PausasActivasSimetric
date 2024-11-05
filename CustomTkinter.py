@@ -10,43 +10,45 @@ class FormularioMaestroDesign(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.Simetric_logo = util_img.leer_imagen("./imagenes/Simetric_logo.jpg", (100, 100))
-        self.Perfil = util_img.leer_imagen("./imagenes/Perfil.png", (100, 100))
+        self.Perfil2 = util_img.leer_imagen("./imagenes/Perfil2.png", (100, 100))
         self.Salud = util_img.leer_imagen("./imagenes/Salud.jpg", (100, 100))
-        self.logica()
+        self.logica()   
 
     def logica(self):
         def paneles():
-            self.barra_superior = ctk.CTkFrame(self, fg_color=COLOR_BARRA_SUPERIOR, height=30)
-            self.barra_superior.pack(side=ctk.TOP, fill='both')
+            self.barra_superior = ctk.CTkFrame(self, fg_color=COLOR_BARRA_SUPERIOR, height=100)  # Ajusta la altura deseada aquí
+            self.barra_superior.pack(side=ctk.TOP, fill='x')
+            self.barra_superior.pack_propagate(False)  # Evita que la barra ajuste su tamaño al contenido
 
-            self.menu_lateral = ctk.CTkFrame(self, fg_color=COLOR_MENU_LATERAL, width=50)
-            self.menu_lateral.pack(side=ctk.LEFT, fill='both', expand=True) 
+            self.menu_lateral = ctk.CTkFrame(self, fg_color=COLOR_MENU_LATERAL, width=20)
+            self.menu_lateral.pack(side=ctk.LEFT, fill='both', expand=False)
 
             self.cuerpo_principal = ctk.CTkFrame(self, fg_color=COLOR_CUERPO_PRINCIPAL)
             self.cuerpo_principal.pack(side=ctk.RIGHT, fill='both', expand=True)
 
         def controles_barra_superior():
-            font_awesome = CTkFont(family="FontAwesome", size=12)  # Cambiar a CTkFont
+            font_awesome = CTkFont(family="Questrial", size=12)  # Cambiar a CTkFont
+
+            self.buttonMenuLateral = ctk.CTkButton(self.barra_superior, text="\uf0c9", font=font_awesome,
+                command=self.toggle_panel, fg_color=COLOR_BARRA_SUPERIOR, text_color="white")
+            self.buttonMenuLateral.pack(side=ctk.LEFT)
 
             self.labelTitulo = ctk.CTkLabel(self.barra_superior, text="SIMETRIC", text_color="white")
             self.labelTitulo.configure(font=CTkFont(family="Roboto", size=15), height=50)  # Cambiar a CTkFont
             self.labelTitulo.pack(side=ctk.LEFT)
-
-            self.buttonMenuLateral = ctk.CTkButton(self.barra_superior, text="\uf0c9", font=font_awesome,
-                                                   command=self.toggle_panel, fg_color=COLOR_BARRA_SUPERIOR, text_color="white")
-            self.buttonMenuLateral.pack(side=ctk.LEFT)
 
             self.labelEmail = ctk.CTkLabel(self.barra_superior, text="atencionalcliente@simetric.com.co", text_color="white")
             self.labelEmail.configure(font=CTkFont(family="Roboto", size=10), padx=32, width=25)  # Cambiar a CTkFont
             self.labelEmail.pack(side=ctk.RIGHT)
 
         def controles_menu_lateral():
-            ancho_menu =150
-            alto_menu = 50
+            ancho_menu =225
+            alto_menu = 45
             font_awesome = CTkFont(family="Questrial", size=20) 
 
-            self.labelPerfil = ctk.CTkLabel(self.menu_lateral, image=self.Perfil)
-            self.labelPerfil.pack(side=ctk.TOP, pady=10)
+            self.labelPerfil = ctk.CTkLabel(self.menu_lateral, image=self.Perfil2, text="")
+            self.labelPerfil.pack(side=ctk.TOP, pady=10,  anchor="center")
+
 
             self.buttonPausas = ctk.CTkButton(self.menu_lateral)
             self.buttonConfig = ctk.CTkButton(self.menu_lateral)
@@ -62,7 +64,7 @@ class FormularioMaestroDesign(ctk.CTk):
                 self.configurar_boton_menu(button, text, icon, font_awesome, ancho_menu, alto_menu, comando)
 
         def controles_cuerpo():
-            label = ctk.CTkLabel(self.cuerpo_principal, image=self.Simetric_logo)
+            label = ctk.CTkLabel(self.cuerpo_principal, image=self.Simetric_logo, text="")
             label.place(x=0, y=0, relwidth=1, relheight=1)
 
         paneles()
@@ -71,7 +73,7 @@ class FormularioMaestroDesign(ctk.CTk):
         controles_cuerpo()
 
     def configurar_boton_menu(self, button, text, icon, font_awesome, ancho_menu, alto_menu, comando):
-        button.configure(text=f" {icon}  {text}", anchor="w", font=font_awesome,
+        button.configure(text=f" {icon}  {text}", anchor="center", font=font_awesome,
                          fg_color=COLOR_MENU_LATERAL, text_color="white", width=ancho_menu, height=alto_menu,
                          command=comando)
         button.pack(side=ctk.TOP)
