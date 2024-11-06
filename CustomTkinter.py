@@ -126,7 +126,6 @@ class FormularioMaestroDesign(ctk.CTk):
             return
 
         # Si todo es correcto, limpia el mensaje y realiza la acción deseada
-        self.mensaje.configure(text="")  # Limpia el mensaje de error
         self.limpiar_panel(self.cuerpo_principal)
 
         # Crear y mostrar el formulario de información

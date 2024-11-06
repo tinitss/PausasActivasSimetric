@@ -25,11 +25,4 @@ def centrar_ventana(ventana, aplicacion_ancho, aplicacion_largo):
 # Centrar la ventana al iniciar
 centrar_ventana(app, 1024, 600)
 
-# Función para manejar el evento de maximización
-def no_mover_ventana():
-    centrar_ventana(app, 1024, 600)
-
-# Vincular el evento de maximización para restablecer la posición
-app.bind("<Configure>", no_mover_ventana)
-
 app.mainloop()
