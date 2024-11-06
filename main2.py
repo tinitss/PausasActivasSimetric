@@ -10,8 +10,9 @@ app.title("PAUSAS ACTIVAS | SIMETRIC")
 app.iconbitmap("./imagenes/Simetric_logo.ico")
 app.geometry("1024x600")
 
-# Establecer tamaño máximo de la ventana
-app.maxsize(1048, 768)
+# Establecer tamaño máximo y mínimo de la ventana
+app.maxsize(1024, 600)
+app.minsize(1024, 600)
 
 # Función para centrar la ventana
 def centrar_ventana(ventana, aplicacion_ancho, aplicacion_largo):
@@ -23,5 +24,12 @@ def centrar_ventana(ventana, aplicacion_ancho, aplicacion_largo):
 
 # Centrar la ventana al iniciar
 centrar_ventana(app, 1024, 600)
+
+# Función para manejar el evento de maximización
+def no_mover_ventana():
+    centrar_ventana(app, 1024, 600)
+
+# Vincular el evento de maximización para restablecer la posición
+app.bind("<Configure>", no_mover_ventana)
 
 app.mainloop()

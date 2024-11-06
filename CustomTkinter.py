@@ -1,10 +1,13 @@
 import customtkinter as ctk
-from customtkinter import CTkFont  # Importa CTkFont en lugar de tkinter.font.Font
+import re
+from customtkinter import CTkFont  
 from config import COLOR_BARRA_SUPERIOR, COLOR_CUERPO_PRINCIPAL, COLOR_MENU_CURSOR_ENCIMA, COLOR_MENU_LATERAL
 import util.util_imagenes as util_img
 from formularios.form_info_design import FormularioInfoDesign
 from formularios.form_sitio_construccion import FormularioSitioConstruccionDesign
 from formularios.form_graficas_design import FormularioGraficasDesign
+from formularios.principal import DatosPersonales
+
 
 class FormularioMaestroDesign(ctk.CTk):
     def __init__(self):
@@ -27,19 +30,20 @@ class FormularioMaestroDesign(ctk.CTk):
             self.cuerpo_principal.pack(side=ctk.RIGHT, fill='both', expand=True)
 
         def controles_barra_superior():
-            font_awesome = CTkFont(family="Questrial", size=12)  # Cambiar a CTkFont
+            font_awesome = CTkFont(family="Helvetica", size=12)  # Cambiar a CTkFont
 
+            #Botón
             self.buttonMenuLateral = ctk.CTkButton(self.barra_superior, text="\uf0c9", font=font_awesome,
-                command=self.toggle_panel, fg_color=COLOR_BARRA_SUPERIOR, text_color="white")
-            self.buttonMenuLateral.pack(side=ctk.LEFT)
+                command=self.toggle_panel, fg_color=COLOR_BARRA_SUPERIOR, text_color="white", width=50, height=45)
+            self.buttonMenuLateral.pack(side=ctk.LEFT, padx=10)
 
-            self.labelTitulo = ctk.CTkLabel(self.barra_superior, text="SIMETRIC", text_color="white")
-            self.labelTitulo.configure(font=CTkFont(family="Roboto", size=15), height=50)  # Cambiar a CTkFont
-            self.labelTitulo.pack(side=ctk.LEFT)
+            #Título
+            self.labelTitulo = ctk.CTkLabel(self.barra_superior, text="SIMETRIC", text_color="white", font=CTkFont(family="Helvetica", size=25, weight="bold"))
+            self.labelTitulo.pack(side=ctk.LEFT, padx=10) 
 
-            self.labelEmail = ctk.CTkLabel(self.barra_superior, text="atencionalcliente@simetric.com.co", text_color="white")
-            self.labelEmail.configure(font=CTkFont(family="Roboto", size=10), padx=32, width=25)  # Cambiar a CTkFont
-            self.labelEmail.pack(side=ctk.RIGHT)
+            #Email
+            self.labelEmail = ctk.CTkLabel(self.barra_superior, text="atencionalcliente@simetric.com.co", text_color="white", font=CTkFont(family="Helvetica", size=17, weight="bold"))
+            self.labelEmail.pack(side=ctk.RIGHT, padx=20)
 
         def controles_menu_lateral():
             ancho_menu =225
@@ -63,14 +67,72 @@ class FormularioMaestroDesign(ctk.CTk):
             for text, icon, button, comando in buttons_info:
                 self.configurar_boton_menu(button, text, icon, font_awesome, ancho_menu, alto_menu, comando)
 
+        
+        
+        
         def controles_cuerpo():
-            label = ctk.CTkLabel(self.cuerpo_principal, image=self.Simetric_logo, text="")
-            label.place(x=0, y=0, relwidth=1, relheight=1)
+            contenedor = ctk.CTkFrame(self.cuerpo_principal, fg_color=COLOR_CUERPO_PRINCIPAL)
+            contenedor.pack(side=ctk.TOP, pady=20)
+            
+            # Label y entrada de nombre centrados
+            self.labelNombre = ctk.CTkLabel(contenedor, text="NOMBRE:")
+            self.labelNombre.pack(side=ctk.TOP, pady=10, expand=False)
 
+            self.entryNombre = ctk.CTkEntry(contenedor, placeholder_text="Escribe tu nombre", width=202)  # Añadir un width fijo
+            self.entryNombre.pack(side=ctk.TOP, pady=10, padx=20)
+
+            # Label y menú de especialidad centrado
+            self.labelEspecialidad = ctk.CTkLabel(contenedor, text="ESPECIALIDAD:")
+            self.labelEspecialidad.pack(side=ctk.TOP, pady=10)
+            
+            especialidad = [
+                "MEDICINA",
+                "OPTO",
+                "FONO",
+                "PSICO"
+            ]
+            
+            # Menú de opciones de especialidad
+            self.especialidad_seleccionada = ctk.StringVar(value="Selecciona una especialidad:")
+            especialidad_menu = ctk.CTkOptionMenu(contenedor, variable=self.especialidad_seleccionada, values=especialidad)
+            especialidad_menu.pack(pady=10, padx=20, expand=True)
+            
+            ctk.CTkButton(contenedor, text="Iniciar", command=self.aceptar).pack(pady=10)
+        
         paneles()
         controles_barra_superior()
         controles_menu_lateral()
         controles_cuerpo()
+        
+    
+            
+    def aceptar(self):
+        seleccion = self.especialidad_seleccionada.get()
+        nombre = self.entryNombre.get()  # Obtener el valor del campo de nombre
+
+        # Validar que el campo de nombre no esté vacío
+        if not nombre:
+            self.mensaje.configure(text="El nombre es obligatorio.")
+            return
+
+        # Validar que el nombre solo contenga letras (y espacios si lo permites)
+        if not re.match("^[A-Za-z\s]+$", nombre):  # Solo letras y espacios
+            self.mensaje.configure(text="El nombre solo puede contener letras.")
+            return
+
+        # Verifica si se seleccionó una especialidad
+        if seleccion == "Selecciona una especialidad:":
+            self.mensaje.configure(text="Es obligatorio seleccionar una especialidad.")
+            return
+
+        # Si todo es correcto, limpia el mensaje y realiza la acción deseada
+        self.mensaje.configure(text="")  # Limpia el mensaje de error
+        self.limpiar_panel(self.cuerpo_principal)
+
+        # Crear y mostrar el formulario de información
+        self.abrir_panel_info()
+
+            
 
     def configurar_boton_menu(self, button, text, icon, font_awesome, ancho_menu, alto_menu, comando):
         button.configure(text=f" {icon}  {text}", anchor="center", font=font_awesome,
@@ -94,7 +156,13 @@ class FormularioMaestroDesign(ctk.CTk):
             self.menu_lateral.pack_forget()
         else:
             self.menu_lateral.pack(side=ctk.LEFT, fill='y')
+    
+    def abrir_panel_principal(self):
+        self.limpiar_panel(self.cuerpo_principal)
+        info_form = DatosPersonales(self.cuerpo_principal, maestro=self)  # Pasar solo el contenedor
+        info_form.pack(fill='both', expand=True)
 
+    
     def abrir_panel_info(self):
         self.limpiar_panel(self.cuerpo_principal)
         info_form = FormularioInfoDesign(self.cuerpo_principal, maestro=self)

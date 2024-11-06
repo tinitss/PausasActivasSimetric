@@ -1,26 +1,26 @@
-import tkinter as tk
-import customtkinter
+import customtkinter as ctk
+from customtkinter import CTkFont
 from datetime import datetime
 from ejercicios import Clase_ejercicios
 from omitir import omitir
 
-customtkinter.set_appearance_mode("System") 
-
-class FormularioInfoDesign(tk.Frame):  
+class FormularioInfoDesign(ctk.CTkFrame):  
     def __init__(self, panel_principal, maestro):
         super().__init__(panel_principal)
         self.panel_principal = panel_principal
         self.maestro = maestro
         self.crear_interfaz()
-        
+
     def crear_interfaz(self):
-        tk.Label(self, text="PAUSAS ACTIVAS", font=("Trebuchet MS", 30)).pack(pady=1)
+        # Título
+        ctk.CTkLabel(self, text="PAUSAS ACTIVAS", font=CTkFont(family="Trebuchet MS", size=30)).pack(pady=1)
 
         # Hora de inicio
-        tk.Label(self, text="Hora de inicio:").pack(pady=5)
-        hora_inicio = tk.Label(self, text=datetime.now().strftime("%H:%M") + " AM")
+        ctk.CTkLabel(self, text="Hora de inicio:").pack(pady=5)
+        hora_inicio = ctk.CTkLabel(self, text=datetime.now().strftime("%H:%M") + " AM")
         hora_inicio.pack(pady=10)
 
+        # Lista de ejercicios
         ejercicios = [
             "Pausas saludables - Abdomen y espalda",
             "Pausas saludables - Caderas",
@@ -32,15 +32,18 @@ class FormularioInfoDesign(tk.Frame):
             "Hábitos seguros - Ergonomía"
         ]
 
-        self.ejercicio_seleccionado = tk.StringVar(value="Selecciona un ejercicio:")
-        tk.OptionMenu(self, self.ejercicio_seleccionado, *ejercicios).pack(pady=10)
+        # Menú de opciones de ejercicios
+        self.ejercicio_seleccionado = ctk.StringVar(value="Selecciona un ejercicio:")
+        ejercicio_menu = ctk.CTkOptionMenu(self, variable=self.ejercicio_seleccionado, values=ejercicios)
+        ejercicio_menu.pack(pady=10)
 
-        self.mensaje = tk.StringVar()
-        self.mensaje.set("Por favor, presiona 'Aceptar' para comenzar.")
-        tk.Label(self, textvariable=self.mensaje).pack(pady=20)
+        # Mensaje inicial
+        self.mensaje = ctk.StringVar(value="Por favor, presiona 'Aceptar' para comenzar.")
+        ctk.CTkLabel(self, textvariable=self.mensaje).pack(pady=20)
 
-        tk.Button(self, text="Iniciar", command=self.aceptar).pack(pady=10)
-        tk.Button(self, text="Omitir", command=self.omitirr).pack(pady=10)
+        # Botones de "Iniciar" y "Omitir"
+        ctk.CTkButton(self, text="Iniciar", command=self.aceptar).pack(pady=10)
+        ctk.CTkButton(self, text="Omitir", command=self.omitirr).pack(pady=10)
 
         self.pack(fill='both', expand=True)
 
@@ -50,12 +53,12 @@ class FormularioInfoDesign(tk.Frame):
         # Verifica si se seleccionó un ejercicio
         if seleccion == "Selecciona un ejercicio:":
             self.mensaje.set("Es obligatorio seleccionar un ejercicio.")
-            return  # Mantiene al usuario en la misma ventana
+            return
 
         # Limpia el panel principal
         self.maestro.limpiar_panel(self.panel_principal)
 
-        # Diccionario que mapea los ejercicios a sus respectivos tipos y a la clase
+        # Diccionario de ejercicios
         ejercicios_dict = {
             "Pausas saludables - Abdomen y espalda": ("abdomen", Clase_ejercicios),
             "Pausas saludables - Caderas": ("cadera", Clase_ejercicios),
@@ -67,20 +70,22 @@ class FormularioInfoDesign(tk.Frame):
             "Hábitos seguros - Ergonomía": ("ergonomia", Clase_ejercicios)
         }
 
-        # Obtiene el tipo de ejercicio y la clase del diccionario
+        # Obtiene el tipo de ejercicio y la clase correspondiente
         tipo_ejercicio, clase_ejercicio = ejercicios_dict.get(seleccion, (None, None))
 
-        if tipo_ejercicio:  # Verifica si el tipo de ejercicio existe
+        if tipo_ejercicio:
             ejercicio = clase_ejercicio(self.panel_principal, self.volver_a_formulario, tipo_ejercicio)
             ejercicio.pack(fill='both', expand=True)
         else:
             self.mensaje.set("Selecciona un ejercicio válido.")
 
     def omitirr(self):
+        # Limpia el panel principal y muestra el panel de omitir
         self.maestro.limpiar_panel(self.panel_principal)
         omitir_panel = omitir(self.panel_principal, self.volver_a_formulario)
         omitir_panel.pack(fill='both', expand=True)
 
     def volver_a_formulario(self):
+        # Restaura el formulario principal
         self.maestro.limpiar_panel(self.panel_principal)
         self.__init__(self.panel_principal, self.maestro)
