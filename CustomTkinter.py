@@ -30,19 +30,19 @@ class FormularioMaestroDesign(ctk.CTk):
             self.cuerpo_principal.pack(side=ctk.RIGHT, fill='both', expand=True)
 
         def controles_barra_superior():
-            font_awesome = CTkFont(family="Helvetica", size=12)  # Cambiar a CTkFont
+            font_awesome = CTkFont(family="Kaboom", size=12)  # Cambiar a CTkFont
 
             #Botón
-            self.buttonMenuLateral = ctk.CTkButton(self.barra_superior, text="\uf0c9", font=font_awesome,
+            self.buttonMenuLateral = ctk.CTkButton(self.barra_superior, text="\uf0c9",
                 command=self.toggle_panel, fg_color=COLOR_BARRA_SUPERIOR, text_color="white", width=50, height=45)
             self.buttonMenuLateral.pack(side=ctk.LEFT, padx=10)
 
             #Título
-            self.labelTitulo = ctk.CTkLabel(self.barra_superior, text="SIMETRIC", text_color="white", font=CTkFont(family="Helvetica", size=25, weight="bold"))
-            self.labelTitulo.pack(side=ctk.LEFT, padx=10) 
+            self.labelTitulo = ctk.CTkLabel(self.barra_superior, text="SIMETRIC", text_color="white", font=CTkFont(family="Kaboom", size=45, weight="bold"))
+            self.labelTitulo.pack(side=ctk.LEFT, padx=5) 
 
             #Email
-            self.labelEmail = ctk.CTkLabel(self.barra_superior, text="atencionalcliente@simetric.com.co", text_color="white", font=CTkFont(family="Helvetica", size=17, weight="bold"))
+            self.labelEmail = ctk.CTkLabel(self.barra_superior, text="atencionalcliente@simetric.com.co", text_color="white", font=CTkFont(family="Questrial", size=17, weight="bold"))
             self.labelEmail.pack(side=ctk.RIGHT, padx=20)
 
         def controles_menu_lateral():
@@ -68,70 +68,86 @@ class FormularioMaestroDesign(ctk.CTk):
                 self.configurar_boton_menu(button, text, icon, font_awesome, ancho_menu, alto_menu, comando)
 
         
-        
-        
         def controles_cuerpo():
+            font_negrilla = ctk.CTkFont(weight="bold", size=17, family="Questrial")
+            font_bienvenida = ctk.CTkFont(family="Kaboom", size=70) 
+            
+            self.labelTitulo = ctk.CTkLabel(self.cuerpo_principal, text="BIENVENIDO", font=font_bienvenida)
+            self.labelTitulo.grid(row=0, column=0, columnspan=3, pady=65, padx=60, sticky="n") 
+                       
             contenedor = ctk.CTkFrame(self.cuerpo_principal, fg_color=COLOR_CUERPO_PRINCIPAL)
-            contenedor.pack(side=ctk.TOP, pady=20)
-            
-            # Label y entrada de nombre centrados
-            self.labelNombre = ctk.CTkLabel(contenedor, text="NOMBRE:")
-            self.labelNombre.pack(side=ctk.TOP, pady=10, expand=False)
+            contenedor.grid(row=0, column=0, padx=110, pady=180, sticky="nsew") # Reduce el valor de pady aquí para que no se desplace demasiado
 
-            self.entryNombre = ctk.CTkEntry(contenedor, placeholder_text="Escribe tu nombre", width=202)  # Añadir un width fijo
-            self.entryNombre.pack(side=ctk.TOP, pady=10, padx=20)
+            contenedor.columnconfigure(0, weight=1)
+            contenedor.columnconfigure(1, weight=1)
+            contenedor.columnconfigure(2, weight=1)
 
-            # Label y menú de especialidad centrado
-            self.labelEspecialidad = ctk.CTkLabel(contenedor, text="ESPECIALIDAD:")
-            self.labelEspecialidad.pack(side=ctk.TOP, pady=10)
+            # Crear label y entry en la misma columna para alinear verticalmente
+            self.labelNombre = ctk.CTkLabel(contenedor, text="NOMBRE", font=font_negrilla)
+            self.labelNombre.grid(row=0, column=1, pady=5, padx=60, sticky="n")  # sticky="n" para que esté alineado en la parte superior
+
+            # Entry para Nombre
+            self.entryNombre = ctk.CTkEntry(contenedor, placeholder_text="Escribe tu nombre", width=210, height=40, font=font_negrilla)
+            self.entryNombre.grid(row=1, column=1, padx=(10, 110), sticky="w")  # sticky="w" para alinear a la izquierda
             
-            especialidad = [
-                "MEDICINA",
-                "OPTO",
-                "FONO",
-                "PSICO"
-            ]
+            self.labelEspecialidad = ctk.CTkLabel(contenedor, text="ESPECIALIDAD", font=font_negrilla)
+            self.labelEspecialidad.grid(row=0, column=2, pady=5, padx=10, sticky="e")
+
+            especialidad = ["MEDICINA", "OPTO", "FONO", "PSICO"]
+            self.especialidad_seleccionada = ctk.StringVar(value="Selecciona una \n especialidad:")
+
+            # Ajustar el ancho del OptionMenu para que coincida con el texto inicial
+            especialidad_menu = ctk.CTkOptionMenu(
+                contenedor,
+                variable=self.especialidad_seleccionada,
+                values=especialidad,
+                width=170,  # Ajusta el ancho para que coincida con el texto inicial
+                height=40,  # Alto aumentado
+                font=font_negrilla,  # Usar la misma fuente
+                dropdown_fg_color="lightblue",  # Color de fondo del desplegable
+                dropdown_text_color="black",  # Color de texto de las opciones
+                button_color=COLOR_BARRA_SUPERIOR,  # Color del botón (cuando no está desplegado)
+                button_hover_color=COLOR_MENU_LATERAL
+            )
             
-            # Menú de opciones de especialidad
-            self.especialidad_seleccionada = ctk.StringVar(value="Selecciona una especialidad:")
-            especialidad_menu = ctk.CTkOptionMenu(contenedor, variable=self.especialidad_seleccionada, values=especialidad)
-            especialidad_menu.pack(pady=10, padx=20, expand=True)
+            especialidad_menu.grid(row=1, column=2, padx=10, sticky="w")
             
-            ctk.CTkButton(contenedor, text="Iniciar", command=self.aceptar).pack(pady=10)
-        
+            
+            self.labelFeedback = ctk.CTkLabel(contenedor, text="", font=font_negrilla, text_color="#c0002b")
+            self.labelFeedback.grid(row=3, column=0, columnspan=3, pady=10)
+
+                   # Función para la validación y retroalimentación
+            def aceptar():
+                seleccion = self.especialidad_seleccionada.get()
+                nombre = self.entryNombre.get()  # Obtener el valor del campo de nombre
+
+                # Validar que el campo de nombre no esté vacío
+                if not nombre:
+                    self.labelFeedback.configure(text="El nombre es obligatorio.")
+                    return
+
+                # Validar que el nombre solo contenga letras (y espacios si lo permites)
+                if not re.match(r"^[A-Za-zñÑ\s]+$", nombre):
+                    self.labelFeedback.configure(text="El nombre solo puede contener letras.")
+                    return
+
+                # Verifica si se seleccionó una especialidad
+                if seleccion == "Selecciona una \n especialidad:":
+                    self.labelFeedback.configure(text="Es obligatorio seleccionar una especialidad.")
+                    return
+                
+                else:
+                    self.limpiar_panel(self.cuerpo_principal)
+                    self.abrir_panel_info(nombre)
+
+            # Crear el botón "Iniciar" que llama a la función aceptar
+            ctk.CTkButton(contenedor, text="Iniciar", command=aceptar, font=font_negrilla, fg_color=COLOR_BARRA_SUPERIOR, hover_color=COLOR_MENU_LATERAL,  
+            text_color="white", width=120, height=40).grid(row=2, column=0, columnspan=3, pady=20, padx=200)
+            
         paneles()
         controles_barra_superior()
         controles_menu_lateral()
-        controles_cuerpo()
-        
-    
-            
-    def aceptar(self):
-        seleccion = self.especialidad_seleccionada.get()
-        nombre = self.entryNombre.get()  # Obtener el valor del campo de nombre
-
-        # Validar que el campo de nombre no esté vacío
-        if not nombre:
-            self.mensaje.configure(text="El nombre es obligatorio.")
-            return
-
-        # Validar que el nombre solo contenga letras (y espacios si lo permites)
-        if not re.match("^[A-Za-z\s]+$", nombre):  # Solo letras y espacios
-            self.mensaje.configure(text="El nombre solo puede contener letras.")
-            return
-
-        # Verifica si se seleccionó una especialidad
-        if seleccion == "Selecciona una especialidad:":
-            self.mensaje.configure(text="Es obligatorio seleccionar una especialidad.")
-            return
-
-        # Si todo es correcto, limpia el mensaje y realiza la acción deseada
-        self.limpiar_panel(self.cuerpo_principal)
-
-        # Crear y mostrar el formulario de información
-        self.abrir_panel_info()
-
-            
+        controles_cuerpo()     
 
     def configurar_boton_menu(self, button, text, icon, font_awesome, ancho_menu, alto_menu, comando):
         button.configure(text=f" {icon}  {text}", anchor="center", font=font_awesome,
@@ -166,6 +182,7 @@ class FormularioMaestroDesign(ctk.CTk):
         self.limpiar_panel(self.cuerpo_principal)
         info_form = FormularioInfoDesign(self.cuerpo_principal, maestro=self)
         info_form.pack(fill='both', expand=True)
+
 
     def abrir_panel_en_construccion(self):
         self.limpiar_panel(self.cuerpo_principal)

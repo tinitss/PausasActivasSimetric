@@ -12,6 +12,11 @@ class FormularioInfoDesign(ctk.CTkFrame):
         self.crear_interfaz()
 
     def crear_interfaz(self):
+        font_bienvenida = ctk.CTkFont(family="Kaboom", size=70) 
+        self.labelTitulo = ctk.CTkLabel(self, text="HOLA", font=font_bienvenida)
+
+        self.labelTitulo.grid(row=0, column=0, columnspan=3, pady=65, padx=60, sticky="n") 
+        
         # Título
         ctk.CTkLabel(self, text="PAUSAS ACTIVAS", font=CTkFont(family="Trebuchet MS", size=30)).pack(pady=1)
 
@@ -41,9 +46,10 @@ class FormularioInfoDesign(ctk.CTkFrame):
         self.mensaje = ctk.StringVar(value="Por favor, presiona 'Aceptar' para comenzar.")
         ctk.CTkLabel(self, textvariable=self.mensaje).pack(pady=20)
 
-        # Botones de "Iniciar" y "Omitir"
-        ctk.CTkButton(self, text="Iniciar", command=self.aceptar).pack(pady=10)
-        ctk.CTkButton(self, text="Omitir", command=self.omitirr).pack(pady=10)
+        # Reemplaza 'pack()' con 'grid()' para que todo se alinee correctamente
+        ctk.CTkButton(self, text="Iniciar", command=self.aceptar).grid(row=10, column=0, columnspan=3, pady=10)
+        ctk.CTkButton(self, text="Omitir", command=self.omitirr).grid(row=11, column=0, columnspan=3, pady=10)
+
 
         self.pack(fill='both', expand=True)
 
