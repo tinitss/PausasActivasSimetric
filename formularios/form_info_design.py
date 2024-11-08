@@ -3,29 +3,56 @@ from customtkinter import CTkFont
 from datetime import datetime
 from ejercicios import Clase_ejercicios
 from omitir import omitir
+from config import COLOR_BARRA_SUPERIOR, COLOR_CUERPO_PRINCIPAL, COLOR_MENU_LATERAL
+
 
 class FormularioInfoDesign(ctk.CTkFrame):  
-    def __init__(self, panel_principal, maestro):
+    def __init__(self, panel_principal, maestro, nombre):
         super().__init__(panel_principal)
         self.panel_principal = panel_principal
         self.maestro = maestro
+        self.nombre = nombre
         self.crear_interfaz()
 
     def crear_interfaz(self):
-        font_bienvenida = ctk.CTkFont(family="Kaboom", size=70) 
-        self.labelTitulo = ctk.CTkLabel(self, text="HOLA", font=font_bienvenida)
-
-        self.labelTitulo.grid(row=0, column=0, columnspan=3, pady=65, padx=60, sticky="n") 
+        # Configuración del área principal
+        self.cuerpo_principal = ctk.CTkFrame(self, fg_color=COLOR_CUERPO_PRINCIPAL)
+        self.cuerpo_principal.pack(side=ctk.RIGHT, fill='both', expand=True)
         
-        # Título
-        ctk.CTkLabel(self, text="PAUSAS ACTIVAS", font=CTkFont(family="Trebuchet MS", size=30)).pack(pady=1)
+        font_bienvenida = CTkFont(family="Kaboom", size=70)
+        font_nombre = CTkFont(family="Kaboom", size=40)  # Fuente para el nombre
+        font_negrilla = CTkFont(weight="bold", size=17, family="Questrial")
 
-        # Hora de inicio
-        ctk.CTkLabel(self, text="Hora de inicio:").pack(pady=5)
-        hora_inicio = ctk.CTkLabel(self, text=datetime.now().strftime("%H:%M") + " AM")
-        hora_inicio.pack(pady=10)
+        # Título principal "HOLA"
+        self.labelTitulo = ctk.CTkLabel(self.cuerpo_principal, text="HOLA", font=font_bienvenida)
+        self.labelTitulo.grid(row=0, column=0, columnspan=3, pady=(4, 10), padx=20, sticky="n")
 
-        # Lista de ejercicios
+        # Nombre en un tamaño de fuente diferente
+        self.labelNombre = ctk.CTkLabel(
+            self.cuerpo_principal,
+            text=self.nombre,
+            font=font_nombre,
+            wraplength=320  # Ajusta este valor según el ancho que prefieras
+        )
+        self.labelNombre.grid(row=1, column=0, columnspan=3, pady=(0, 0), padx=20, sticky="n")
+        
+        
+        # Contenedor de elementos
+        contenedor = ctk.CTkFrame(self.cuerpo_principal, fg_color=COLOR_CUERPO_PRINCIPAL)
+        contenedor.grid(row=1, column=0, padx=20, pady=90, sticky="nsew")
+        contenedor.columnconfigure(0, weight=1)
+        contenedor.columnconfigure(1, weight=1)
+        contenedor.columnconfigure(2, weight=1)
+
+        # Subtítulo "Pausas Activas"
+        self.labelPausas = ctk.CTkLabel(contenedor, text="ES MOMENTO DE HACER \n PAUSAS ACTIVAS", font=CTkFont(family="Kaboom", size=45))
+        self.labelPausas.grid(row=0, column=1, pady=10, padx=20, sticky="n")
+
+        # Mostrar la hora de inicio
+        self.hora_inicio = ctk.CTkLabel(contenedor, text="Hora de inicio: " + datetime.now().strftime("%H:%M"), font=font_negrilla)
+        self.hora_inicio.grid(row=1, column=1, pady=5, padx=60, sticky="n")
+
+        # Menú de ejercicios
         ejercicios = [
             "Pausas saludables - Abdomen y espalda",
             "Pausas saludables - Caderas",
@@ -37,35 +64,45 @@ class FormularioInfoDesign(ctk.CTkFrame):
             "Hábitos seguros - Ergonomía"
         ]
 
-        # Menú de opciones de ejercicios
         self.ejercicio_seleccionado = ctk.StringVar(value="Selecciona un ejercicio:")
-        ejercicio_menu = ctk.CTkOptionMenu(self, variable=self.ejercicio_seleccionado, values=ejercicios)
-        ejercicio_menu.pack(pady=10)
+        ejercicio_menu = ctk.CTkOptionMenu(                
+                contenedor,
+                variable=self.ejercicio_seleccionado,
+                values=ejercicios,
+                width=170,
+                height=40,
+                font=font_negrilla,
+                dropdown_fg_color="lightblue",
+                dropdown_text_color="black",
+                button_color=COLOR_BARRA_SUPERIOR,
+                button_hover_color=COLOR_MENU_LATERAL)
+            
+        ejercicio_menu.grid(row=1, column=1, padx=10, sticky="n")
 
-        # Mensaje inicial
-        self.mensaje = ctk.StringVar(value="Por favor, presiona 'Aceptar' para comenzar.")
-        ctk.CTkLabel(self, textvariable=self.mensaje).pack(pady=20)
+        # Mensaje de retroalimentación
+        self.mensaje = ctk.StringVar(value="Por favor, presiona 'Iniciar' para comenzar.")
+        self.labelMensaje = ctk.CTkLabel(contenedor, textvariable=self.mensaje, font=font_negrilla)
+        self.labelMensaje.grid(row=3, column=0, columnspan=3, pady=20)
 
-        # Reemplaza 'pack()' con 'grid()' para que todo se alinee correctamente
-        ctk.CTkButton(self, text="Iniciar", command=self.aceptar).grid(row=10, column=0, columnspan=3, pady=10)
-        ctk.CTkButton(self, text="Omitir", command=self.omitirr).grid(row=11, column=0, columnspan=3, pady=10)
+        # Botones "Iniciar" y "Omitir"
+        ctk.CTkButton(contenedor, text="Iniciar", command=self.aceptar, font=font_negrilla, fg_color=COLOR_BARRA_SUPERIOR, 
+                      hover_color=COLOR_MENU_LATERAL, text_color="white", width=120, height=40).grid(row=4, column=0, pady=10, padx=20)
+        ctk.CTkButton(contenedor, text="Omitir", command=self.omitirr, font=font_negrilla, fg_color="#c0002b",
+                      text_color="white", width=120, height=40).grid(row=4, column=2, pady=10, padx=20)
 
-
-        self.pack(fill='both', expand=True)
+        # Configurar grid en lugar de pack para el contenedor principal
+        self.grid(row=0, column=0, sticky="nsew")
 
     def aceptar(self):
         seleccion = self.ejercicio_seleccionado.get()
 
-        # Verifica si se seleccionó un ejercicio
         if seleccion == "Selecciona un ejercicio:":
             self.mensaje.set("Es obligatorio seleccionar un ejercicio.")
             return
 
-        # Limpia el panel principal
+        # Limpia el panel principal y carga el ejercicio
         self.maestro.limpiar_panel(self.panel_principal)
-
-        # Diccionario de ejercicios
-        ejercicios_dict = {
+        tipo_ejercicio, clase_ejercicio = {
             "Pausas saludables - Abdomen y espalda": ("abdomen", Clase_ejercicios),
             "Pausas saludables - Caderas": ("cadera", Clase_ejercicios),
             "Pausas saludables - Manos y codos": ("manos", Clase_ejercicios),
@@ -74,24 +111,19 @@ class FormularioInfoDesign(ctk.CTkFrame):
             "Pausa saludable para la voz": ("voz", Clase_ejercicios),
             "Pausa saludable - Hombros": ("hombros", Clase_ejercicios),
             "Hábitos seguros - Ergonomía": ("ergonomia", Clase_ejercicios)
-        }
-
-        # Obtiene el tipo de ejercicio y la clase correspondiente
-        tipo_ejercicio, clase_ejercicio = ejercicios_dict.get(seleccion, (None, None))
+        }.get(seleccion, (None, None))
 
         if tipo_ejercicio:
             ejercicio = clase_ejercicio(self.panel_principal, self.volver_a_formulario, tipo_ejercicio)
-            ejercicio.pack(fill='both', expand=True)
+            ejercicio.grid(row=5, column=0, columnspan=3, pady=10)
         else:
             self.mensaje.set("Selecciona un ejercicio válido.")
 
     def omitirr(self):
-        # Limpia el panel principal y muestra el panel de omitir
         self.maestro.limpiar_panel(self.panel_principal)
         omitir_panel = omitir(self.panel_principal, self.volver_a_formulario)
-        omitir_panel.pack(fill='both', expand=True)
+        omitir_panel.grid(row=5, column=0, columnspan=3, pady=10)
 
     def volver_a_formulario(self):
-        # Restaura el formulario principal
         self.maestro.limpiar_panel(self.panel_principal)
-        self.__init__(self.panel_principal, self.maestro)
+        self.crear_interfaz()
