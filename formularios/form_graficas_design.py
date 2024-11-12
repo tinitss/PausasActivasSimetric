@@ -15,7 +15,8 @@ class FormularioGraficasDesign():
 
         canvas = FigureCanvasTkAgg(figura, master=panel_principal)
         canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        canvas.get_tk_widget().grid(row=0, column=0, sticky="nsew")
+
 
     def grafico1(self, ax):
        x = [1, 2, 3, 4, 5]

@@ -1,22 +1,38 @@
-import tkinter as tk
+import customtkinter as ctk
 from config import COLOR_CUERPO_PRINCIPAL
+from tkinter import END  # Import END from tkinter
 
-class FormularioSitioConstruccionDesign():
-
-    def __init__(self, panel_principal, Simetric_logo):
-        self.barra_superior = tk.Frame(panel_principal)
-        self.barra_superior.pack(side=tk.TOP, fill=tk.X, expand=False)
-
-        self.barra_inferior = tk.Frame(panel_principal)
-        self.barra_inferior.pack(side=tk.BOTTOM, fill='both', expand=True)
-
-
-        self.labelTitulo = tk.Label(
-            self.barra_superior, text="Página en construcción")
-        self.labelTitulo.config( font=("Roboto", 30), bg=COLOR_CUERPO_PRINCIPAL)
-        self.labelTitulo.pack(side=tk.TOP, fill='both', expand=True)
+class FormularioSitioConstruccionDesign(ctk.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master, fg_color=COLOR_CUERPO_PRINCIPAL)
         
-        self.labelImagen = tk.Label(self.barra_inferior, image=Simetric_logo)   
-        self.labelImagen.place(x=0, y=0, relwidth=1, relheight=1)
-        self.labelImagen.config(fg="#fff", font=("Roboto", 10), bg=COLOR_CUERPO_PRINCIPAL)
-        
+        # Set layout configuration
+        self.grid(row=0, column=0, sticky="nsew")
+
+        # Title label
+        self.titulo = ctk.CTkLabel(self, text="TEMA:")
+        self.titulo.grid(row=0, column=0, pady=10)
+
+        # Light/Dark toggle button
+        self.switch = ctk.CTkSwitch(self, text="Light/Dark", command=self.Cambio_Tema)
+        self.switch.grid(row=2, column=0, pady=20)
+
+    # Set initial mode as "dark"
+    mode = "dark"
+    
+    # Theme change function
+    def Cambio_Tema(self):
+        if self.mode == "dark":
+            ctk.set_appearance_mode("light")
+            self.mode = "light"
+            self.titulo.configure(text_color="black")
+            self.switch.configure(text_color="black")
+            
+            # Additional elements, like text in Textbox, can be updated here.
+        else:
+            ctk.set_appearance_mode("dark")
+            self.mode = "dark"
+            self.titulo.configure(text_color="black")
+            self.switch.configure(text_color="black")
+            
+            # Update additional elements for dark mode as needed.

@@ -55,7 +55,7 @@ class FormularioMaestroDesign(ctk.CTk):
             self.buttonAyuda = ctk.CTkButton(self.menu_lateral)
 
             buttons_info = [
-                ("Pausas", "\uf109", self.buttonPausas, self.abrir_panel_info),
+                ("Inicio", "\uf007", self.buttonConfig, self.abrir_panel_info),
                 ("Configuración", "\uf007", self.buttonConfig, self.abrir_panel_en_construccion),
                 ("Ayuda", "\uf03e", self.buttonAyuda, self.abrir_panel_graficas)
             ]
@@ -175,16 +175,17 @@ class FormularioMaestroDesign(ctk.CTk):
 
     def abrir_panel_info(self, nombre):
         formulario = FormularioInfoDesign(self.cuerpo_principal, self, nombre)
-        formulario.pack(fill="both", expand=True)
+        formulario.grid(row=0, column=0, sticky="nsew") 
         
 
     def abrir_panel_en_construccion(self):
         formulario_sitio = FormularioSitioConstruccionDesign(self.cuerpo_principal)
-        formulario_sitio.pack(fill="both", expand=True)
+        formulario_sitio.grid(row=0, column=0, sticky="nsew") 
 
     def abrir_panel_graficas(self):
         formulario_graficas = FormularioGraficasDesign(self.cuerpo_principal)
-        formulario_graficas.pack(fill="both", expand=True)
+        formulario_graficas.grid(row=0, column=0, sticky="nsew")  # or your desired grid layout parameters
+
 
     def limpiar_panel(self, frame):
         for widget in frame.winfo_children():

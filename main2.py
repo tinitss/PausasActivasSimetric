@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from CustomTkinter import FormularioMaestroDesign
 
-ctk.set_appearance_mode("system")
+ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("blue")
 
 app = FormularioMaestroDesign()
