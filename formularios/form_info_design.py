@@ -13,11 +13,17 @@ class FormularioInfoDesign(ctk.CTkFrame):
         self.maestro = maestro
         self.nombre = nombre
         self.crear_interfaz()
+        
+    def limpiar_panel(self):
+        for widget in self.panel_principal.winfo_children():
+            widget.grid_forget()
 
     def crear_interfaz(self):
         # Configuración del área principal
         self.cuerpo_principal = ctk.CTkFrame(self, fg_color=COLOR_CUERPO_PRINCIPAL)
         self.cuerpo_principal.pack(side=ctk.RIGHT, fill='both', expand=True)
+        
+        self.omitir_panel = omitir(self.panel_principal, self.volver_a_formulario)
         
         font_bienvenida = CTkFont(family="Kaboom", size=70)
         font_nombre = CTkFont(family="Kaboom", size=40)  # Fuente para el nombre
@@ -87,7 +93,7 @@ class FormularioInfoDesign(ctk.CTkFrame):
         # Botones "Iniciar" y "Omitir"
         ctk.CTkButton(contenedor, text="Iniciar", command=self.aceptar, font=font_negrilla, fg_color=COLOR_BARRA_SUPERIOR, 
                       hover_color=COLOR_MENU_LATERAL, text_color="white", width=120, height=40).grid(row=4, column=0, pady=10, padx=20)
-        ctk.CTkButton(contenedor, text="Omitir", command=self.omitirr, font=font_negrilla, fg_color="#c0002b",
+        ctk.CTkButton(contenedor, text="Omitir", command=self.omitir_pausa, font=font_negrilla, fg_color="#c0002b",
                       text_color="white", width=120, height=40).grid(row=4, column=2, pady=10, padx=20)
 
         # Configurar grid en lugar de pack para el contenedor principal
@@ -119,11 +125,19 @@ class FormularioInfoDesign(ctk.CTkFrame):
         else:
             self.mensaje.set("Selecciona un ejercicio válido.")
 
-    def omitirr(self):
+    def omitir_pausa(self):
         self.maestro.limpiar_panel(self.panel_principal)
         omitir_panel = omitir(self.panel_principal, self.volver_a_formulario)
         omitir_panel.grid(row=5, column=0, columnspan=3, pady=10)
 
     def volver_a_formulario(self):
+        # Limpiar el panel principal sin destruir la ventana actual
         self.maestro.limpiar_panel(self.panel_principal)
+        
+        # Crear la interfaz de nuevo sin intentar destruir la ventana anterior
         self.crear_interfaz()
+
+        # Si quieres ocultar la ventana en lugar de destruirla, usa .pack_forget() o .grid_forget()
+        self.grid_forget()  # Oculta el formulario actual
+        self.panel_principal.actualizar_ventana()  # Reemplaza esto con un método para actualizar el panel
+

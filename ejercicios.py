@@ -1,7 +1,11 @@
 import tkinter as tk
+import customtkinter as ctk
+from customtkinter import *
 from PIL import Image, ImageTk
-import cv2
+import cv2  
 import imutils
+from config import COLOR_BARRA_SUPERIOR, COLOR_CUERPO_PRINCIPAL, COLOR_MENU_LATERAL
+
 class Clase_ejercicios(tk.Frame):
     def __init__(self, panel_principal, callback_volver, tipo_ejercicio, *args, **kwargs):
         super().__init__(panel_principal, *args, **kwargs)
@@ -11,8 +15,17 @@ class Clase_ejercicios(tk.Frame):
         self.cap = None  
         self.is_paused = False  
         self.crear_interfaz()
+    
 
     def crear_interfaz(self):
+        font_negrilla = CTkFont(weight="bold", size=17, family="Questrial")
+        
+        self.contenedor_margen = ctk.CTkFrame(self, fg_color=COLOR_CUERPO_PRINCIPAL)
+        self.contenedor_margen.pack(expand=True, fill='both')
+        
+        self.cuerpo_principal = ctk.CTkFrame(self.contenedor_margen, fg_color=COLOR_CUERPO_PRINCIPAL, width=800, height=600)
+        self.cuerpo_principal.pack(padx=80, pady=5)  # Ajusta padx para desplazar hacia la derecha
+
         if self.tipo_ejercicio == "abdomen":
             self.abdomen()
         elif self.tipo_ejercicio == "cadera":
@@ -30,77 +43,72 @@ class Clase_ejercicios(tk.Frame):
         elif self.tipo_ejercicio == "ergonomia":
             self.ergonomia()
 
-        tk.Button(self, text="Volver", command=self.volver).pack(pady=10)
+        self.boton_volver = ctk.CTkButton(self.cuerpo_principal, text="Volver", command=self.volver, font=font_negrilla, 
+                                    fg_color=COLOR_BARRA_SUPERIOR, hover_color=COLOR_MENU_LATERAL, 
+                                    text_color="white", width=80, height=30)
+        self.boton_volver.pack(pady=5)  
 
     def inicializar_video(self, video_path):
         self.cap = cv2.VideoCapture(video_path)
         self.video()  # Llama al método para iniciar la reproducción del video
 
-    # Método para crear los elementos de la interfaz relacionados con el video
     def crear_elementos_video(self):
-        self.lblInfoVideoPath = tk.Label(self)
+                # Etiqueta para mostrar la ruta del video
+        self.lblInfoVideoPath = tk.Label(self.cuerpo_principal, bg=COLOR_CUERPO_PRINCIPAL)
         self.lblInfoVideoPath.pack()
-        self.lblVideo = tk.Label(self)
-        self.lblVideo.pack()
+
+        # Etiqueta para el video sin margen extra
+        self.lblVideo = tk.Label(self.cuerpo_principal, bg=COLOR_CUERPO_PRINCIPAL)
+        self.lblVideo.pack(pady=(0, 0))  # Ajusta el padding a (0, 0) para eliminar espacio adicional
+
+        # Hacer que el video se centre y se ajuste con el resto de los elementos
         self.lblVideo.bind("<Button-1>", self.toggle_play_pause)
 
-    # Método para configurar y reproducir el video de abdomen
+
+    def crear_titulo(self, texto):
+        titulo = ctk.CTkFont(weight="bold", size=30, family="Kaboom")
+        tk.Label(self.cuerpo_principal, text=texto, font=titulo, bg=COLOR_CUERPO_PRINCIPAL).pack(pady=5)
+
     def abdomen(self):
-        tk.Label(self, text="Pausas saludables - Abdomen y espalda", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo
+        self.crear_titulo("Pausas saludables - Abdomen y espalda")
         self.crear_elementos_video()
         self.inicializar_video("./videos/Abdomen.mp4")
-        
-    # Método para configurar y reproducir el video de cadera
+
     def cadera(self):
-        tk.Label(self, text="Pausas saludables - Caderas", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
+        self.crear_titulo("Pausas saludables - Caderas")
         self.crear_elementos_video()
         self.inicializar_video("./videos/Cadera.mp4") 
 
     def manos(self):
-        tk.Label(self, text="Pausas saludables - Manos y codos", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
+        self.crear_titulo("Pausas saludables - Manos y codos")
         self.crear_elementos_video()
         self.inicializar_video("./videos/Manos.mp4") 
 
     def cuello(self):
-        tk.Label(self, text="Pausas saludables - Cuellos", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
+        self.crear_titulo("Pausas saludables - Cuello")
         self.crear_elementos_video()
         self.inicializar_video("./videos/Cuello.mp4")
 
     def ojos(self):
-        tk.Label(self, text="Pausa saludable para los ojos", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
+        self.crear_titulo("Pausa saludable para los ojos")
         self.crear_elementos_video()
         self.inicializar_video("./videos/Ojos.mp4") 
 
     def voz(self):
-        tk.Label(self, text="Pausa saludable para la voz", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
+        self.crear_titulo("Pausa saludable para la voz")
         self.crear_elementos_video()
         self.inicializar_video("./videos/Voz.mp4") 
 
     def hombros(self):
-        tk.Label(self, text="Pausa saludable - Hombros", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
+        self.crear_titulo("Pausa saludable - Hombros")
         self.crear_elementos_video()
         self.inicializar_video("./videos/Hombros.mp4")
 
     def ergonomia(self):
-        tk.Label(self, text="Hábitos seguros - Ergonomía", font=("Trebuchet MS", 20)).pack(pady=5)
-        
-        # Crear elementos de video y configurarlo (puedes asignar otro video si es necesario)
+        self.crear_titulo("Hábitos seguros - Ergonomía")
         self.crear_elementos_video()
-        self.inicializar_video("./videos/Ergonomia.mp4") 
+        self.inicializar_video("./videos/Ergonomia.mp4")
+
 
     # Método para reproducir el video
     def video(self):
@@ -118,6 +126,7 @@ class Clase_ejercicios(tk.Frame):
                 self.lblInfoVideoPath.config(text="Fin del video")
                 self.cap.release()
 
+    # Método para pausar y reanudar el video
     def toggle_play_pause(self, event):
         if self.is_paused:
             self.is_paused = False
@@ -126,6 +135,9 @@ class Clase_ejercicios(tk.Frame):
             self.is_paused = True
 
     def volver(self):
+        if self.cap:
+            self.cap.release()  # Libera el video
         if self.callback_volver:
-            self.callback_volver()
-        self.destroy()
+            self.callback_volver()  # Llama al callback para regresar
+        self.pack_forget()  # Oculta la pantalla actual
+
