@@ -18,15 +18,19 @@ class FormularioMaestroDesign(ctk.CTk):
 
     def logica(self):
         def paneles():
-            self.barra_superior = ctk.CTkFrame(self, fg_color=COLOR_BARRA_SUPERIOR, height=100)
-            self.barra_superior.pack(side=ctk.TOP, fill='x')
-            self.barra_superior.pack_propagate(False)
+            self.grid_columnconfigure(0, weight=0)  # Columna del menú lateral
+            self.grid_columnconfigure(1, weight=1)  # Columna del cuerpo principal
+            self.grid_rowconfigure(1, weight=1)
 
-            self.menu_lateral = ctk.CTkFrame(self, fg_color=COLOR_MENU_LATERAL, width=20)
-            self.menu_lateral.pack(side=ctk.LEFT, fill='both', expand=False)
+            self.barra_superior = ctk.CTkFrame(self, fg_color=COLOR_BARRA_SUPERIOR, height=100)
+            self.barra_superior.grid(row=0, column=0, columnspan=2, sticky="nsew")
+            self.barra_superior.grid_propagate(False)
+
+            self.menu_lateral = ctk.CTkFrame(self, fg_color=COLOR_MENU_LATERAL, width=225)
+            self.menu_lateral.grid(row=1, column=0, sticky="nsew")
 
             self.cuerpo_principal = ctk.CTkFrame(self, fg_color=COLOR_CUERPO_PRINCIPAL)
-            self.cuerpo_principal.pack(side=ctk.RIGHT, fill='both', expand=True)
+            self.cuerpo_principal.grid(row=1, column=1, sticky="nsew")
 
         def controles_barra_superior():
             self.buttonMenuLateral = ctk.CTkButton(self.barra_superior, text="\uf0c9",
@@ -71,20 +75,32 @@ class FormularioMaestroDesign(ctk.CTk):
         font_negrilla = ctk.CTkFont(weight="bold", size=17, family="Questrial")
         font_bienvenida = ctk.CTkFont(family="Kaboom", size=70)
 
-        self.labelTitulo = ctk.CTkLabel(self.cuerpo_principal, text="BIENVENIDO", font=font_bienvenida)
-        self.labelTitulo.grid(row=0, column=0, columnspan=3, pady=65, padx=60, sticky="n")
+        # Aseguramos que el contenido de cuerpo_principal se centre horizontalmente
+        self.cuerpo_principal.grid_columnconfigure(0, weight=1)
+        self.cuerpo_principal.grid_rowconfigure(0, weight=1)
 
-        contenedor = ctk.CTkFrame(self.cuerpo_principal, fg_color=COLOR_CUERPO_PRINCIPAL)
-        contenedor.grid(row=0, column=0, padx=110, pady=180, sticky="nsew")
+        self.labelTitulo = ctk.CTkLabel(self.cuerpo_principal, text="BIENVENIDO", font=font_bienvenida)
+        self.labelTitulo.grid(row=0, column=0, pady=(80, 0))
+
+        # Frame intermedio que centra el contenido
+        frame_centrador = ctk.CTkFrame(self.cuerpo_principal, fg_color=COLOR_BARRA_SUPERIOR)
+        frame_centrador.grid(row=1, column=0, sticky="nsew", pady=(0, 100))
+        self.cuerpo_principal.grid_rowconfigure(1, weight=1)
+        self.cuerpo_principal.grid_columnconfigure(0, weight=1)
+        frame_centrador.grid_columnconfigure(0, weight=1)
+
+        contenedor = ctk.CTkFrame(frame_centrador, fg_color=COLOR_CUERPO_PRINCIPAL)
+        contenedor.grid(row=0, column=0)
+
         contenedor.columnconfigure(0, weight=1)
-        contenedor.columnconfigure(1, weight=1)
-        contenedor.columnconfigure(2, weight=1)
+        contenedor.columnconfigure(1, weight=0)
+        contenedor.columnconfigure(2, weight=0)
 
         self.nombre_var = ctk.StringVar()
         self.nombre_var.trace_add("write", lambda *args: self.nombre_var.set(self.nombre_var.get().upper()))
 
         self.labelNombre = ctk.CTkLabel(contenedor, text="NOMBRE", font=font_negrilla)
-        self.labelNombre.grid(row=0, column=1, pady=5, padx=60, sticky="n")
+        self.labelNombre.grid(row=0, column=1, padx=(20, 0))
 
         self.entryNombre = ctk.CTkEntry(
             contenedor, placeholder_text="Escribe tu nombre",
@@ -93,7 +109,7 @@ class FormularioMaestroDesign(ctk.CTk):
         self.entryNombre.grid(row=1, column=1, padx=(10, 110), sticky="w")
 
         self.labelEspecialidad = ctk.CTkLabel(contenedor, text="ESPECIALIDAD", font=font_negrilla)
-        self.labelEspecialidad.grid(row=0, column=2, pady=5, padx=10, sticky="e")
+        self.labelEspecialidad.grid(row=0, column=2, pady=5, padx=30, sticky="e")
 
         especialidad = ["MEDICINA", "OPTO", "FONO", "PSICO"]
         self.especialidad_seleccionada = ctk.StringVar(value="Selecciona una \n especialidad:")
@@ -140,6 +156,7 @@ class FormularioMaestroDesign(ctk.CTk):
             text_color="white", width=120, height=40
         ).grid(row=2, column=0, columnspan=3, pady=20, padx=200)
 
+
     def configurar_boton_menu(self, button, text, icon, font_awesome, ancho_menu, alto_menu, comando):
         button.configure(text=f" {icon}  {text}", anchor="center", font=font_awesome,
                          fg_color=COLOR_MENU_LATERAL, text_color="white", width=ancho_menu, height=alto_menu,
@@ -159,9 +176,13 @@ class FormularioMaestroDesign(ctk.CTk):
 
     def toggle_panel(self):
         if self.menu_lateral.winfo_ismapped():
-            self.menu_lateral.pack_forget()
+            self.menu_lateral.grid_forget()
+            self.grid_columnconfigure(0, weight=0)
+            self.grid_columnconfigure(1, weight=1)
         else:
-            self.menu_lateral.pack(side=ctk.LEFT, fill='both', expand=False)
+            self.menu_lateral.grid(row=1, column=0, sticky="nsew")
+            self.grid_columnconfigure(0, weight=0)
+            self.grid_columnconfigure(1, weight=1)
 
     def abrir_panel_inicio(self):
         self.limpiar_panel(self.cuerpo_principal)
@@ -169,7 +190,7 @@ class FormularioMaestroDesign(ctk.CTk):
         
     def abrir_panel_info(self, nombre):
         self.limpiar_panel(self.cuerpo_principal)
-        formulario = FormularioInfoDesign(self.cuerpo_principal, self, nombre)
+        formulario = FormularioInfoDesign(self.cuerpo_principal, self, nombre)  
         formulario.grid(row=0, column=0, sticky="nsew")
 
 

@@ -106,6 +106,7 @@ class FormularioInfoDesign(ctk.CTkFrame):
 
         if seleccion == "Selecciona un ejercicio:":
             self.mensaje.set("Es obligatorio seleccionar un ejercicio")
+            self.labelMensaje.configure(text_color="#c0002b")
             return
 
         # Limpia el panel principal y carga el ejercicio
