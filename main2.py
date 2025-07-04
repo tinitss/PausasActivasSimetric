@@ -6,8 +6,8 @@ ctk.set_default_color_theme("blue")
 
 app = FormularioMaestroDesign()
 
-app.title("PAUSAS ACTIVAS | SIMETRIC")  
-app.iconbitmap("./imagenes/Simetric_logo.ico")
+app.title("PAUSAS ACTIVAS")  
+app.iconbitmap("./imagenes/MinisterioTrabajo.ico")
 app.geometry("1024x600")
 
 # Establecer tamaño máximo y mínimo de la ventana

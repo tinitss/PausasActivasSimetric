@@ -7,15 +7,17 @@ import imutils
 from config import COLOR_BARRA_SUPERIOR, COLOR_CUERPO_PRINCIPAL, COLOR_MENU_LATERAL
 
 class Clase_ejercicios(tk.Frame):
-    def __init__(self, panel_principal, callback_volver, tipo_ejercicio, *args, **kwargs):
+    def __init__(self, panel_principal, callback_volver, tipo_ejercicio, maestro, nombre, *args, **kwargs):
         super().__init__(panel_principal, *args, **kwargs)
         self.panel_principal = panel_principal
         self.callback_volver = callback_volver
         self.tipo_ejercicio = tipo_ejercicio
+        self.maestro = maestro
+        self.nombre = nombre
         self.cap = None  
         self.is_paused = False  
         self.crear_interfaz()
-    
+
 
     def crear_interfaz(self):
         font_negrilla = CTkFont(weight="bold", size=17, family="Questrial")
@@ -135,9 +137,8 @@ class Clase_ejercicios(tk.Frame):
             self.is_paused = True
 
     def volver(self):
-        if self.cap:
-            self.cap.release()  # Libera el video
-        if self.callback_volver:
-            self.callback_volver()  # Llama al callback para regresar
-        self.pack_forget()  # Oculta la pantalla actual
+        self.maestro.abrir_panel_info(self.nombre)
+
+
+
 

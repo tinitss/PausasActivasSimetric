@@ -93,6 +93,8 @@ class FormularioInfoDesign(ctk.CTkFrame):
         # Botones "Iniciar" y "Omitir"
         ctk.CTkButton(contenedor, text="Iniciar", command=self.aceptar, font=font_negrilla, fg_color=COLOR_BARRA_SUPERIOR, 
                       hover_color=COLOR_MENU_LATERAL, text_color="white", width=120, height=40).grid(row=4, column=0, pady=10, padx=20)
+        ctk.CTkButton(contenedor, text="Volver", command=self.volver_a_formulario, font=font_negrilla, fg_color=COLOR_BARRA_SUPERIOR, 
+                      hover_color=COLOR_MENU_LATERAL, text_color="white", width=120, height=40).grid(row=4, column=1, pady=10, padx=20)
         ctk.CTkButton(contenedor, text="Omitir", command=self.omitir_pausa, font=font_negrilla, fg_color="#c0002b",
                       text_color="white", width=120, height=40).grid(row=4, column=2, pady=10, padx=20)
 
@@ -103,7 +105,7 @@ class FormularioInfoDesign(ctk.CTkFrame):
         seleccion = self.ejercicio_seleccionado.get()
 
         if seleccion == "Selecciona un ejercicio:":
-            self.mensaje.set("Es obligatorio seleccionar un ejercicio.")
+            self.mensaje.set("Es obligatorio seleccionar un ejercicio")
             return
 
         # Limpia el panel principal y carga el ejercicio
@@ -120,7 +122,7 @@ class FormularioInfoDesign(ctk.CTkFrame):
         }.get(seleccion, (None, None))
 
         if tipo_ejercicio:
-            ejercicio = clase_ejercicio(self.panel_principal, self.volver_a_formulario, tipo_ejercicio)
+            ejercicio = clase_ejercicio(self.panel_principal, self.volver_a_formulario, tipo_ejercicio, self.maestro, self.nombre)
             ejercicio.grid(row=5, column=0, columnspan=3, pady=10)
         else:
             self.mensaje.set("Selecciona un ejercicio válido.")
@@ -131,13 +133,7 @@ class FormularioInfoDesign(ctk.CTkFrame):
         omitir_panel.grid(row=5, column=0, columnspan=3, pady=10)
 
     def volver_a_formulario(self):
-        # Limpiar el panel principal sin destruir la ventana actual
-        self.maestro.limpiar_panel(self.panel_principal)
+        self.maestro.abrir_panel_inicio()
         
-        # Crear la interfaz de nuevo sin intentar destruir la ventana anterior
-        self.crear_interfaz()
 
-        # Si quieres ocultar la ventana en lugar de destruirla, usa .pack_forget() o .grid_forget()
-        self.grid_forget()  # Oculta el formulario actual
-        self.panel_principal.actualizar_ventana()  # Reemplaza esto con un método para actualizar el panel
 
