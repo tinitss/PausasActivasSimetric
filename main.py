@@ -1,16 +1,16 @@
 import customtkinter as ctk
-from CustomTkinter import FormularioMaestroDesign
+from Inicio import FormularioInicio
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("blue")
 
-app = FormularioMaestroDesign()
+app = FormularioInicio()
 
 app.title("PAUSAS ACTIVAS")  
 app.iconbitmap("./imagenes/MinisterioTrabajo.ico")
 app.geometry("1024x600")
 
-# Establecer tamaño máximo y mínimo de la ventana
+# Establecer tamaño máximo y mínimo de la ve-ntana
 app.maxsize(1024, 600)
 app.minsize(1024, 600)
 

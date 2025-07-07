@@ -6,7 +6,7 @@ from omitir import omitir
 from config import COLOR_BARRA_SUPERIOR, COLOR_CUERPO_PRINCIPAL, COLOR_MENU_LATERAL
 
 
-class FormularioInfoDesign(ctk.CTkFrame):  
+class FormularioInformacion(ctk.CTkFrame):  
     def __init__(self, panel_principal, maestro, nombre):
         super().__init__(panel_principal)
         self.panel_principal = panel_principal

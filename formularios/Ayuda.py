@@ -2,7 +2,7 @@ import tkinter as tk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-class FormularioGraficasDesign():
+class FormularioAyuda():
 
     def __init__(self, panel_principal):
         figura = Figure(figsize=(8,6), dpi=100)
