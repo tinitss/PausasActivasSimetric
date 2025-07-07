@@ -9,7 +9,7 @@ class omitir(tk.Frame):
 
     def interfaz(self):
         mensaje = tk.StringVar()
-        mensaje.set("¿Está segur@ que desea salir de la pausa activa?")
+        mensaje.set("¿Está segur@ que desea omitir de la pausa activa?")
 
         label_mensaje = tk.Label(self, textvariable=mensaje, font=("Arial", 16))
         label_mensaje.pack(pady=20)
