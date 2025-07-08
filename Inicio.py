@@ -41,15 +41,16 @@ class FormularioInicio(ctk.CTk):
 
         def controles_barra_superior():
             # ⬇️ Botón con altura controlada
+            # Al crearlo
             self.buttonMenuLateral = ctk.CTkButton(
                 self.barra_superior,
                 text="\uf0c9",
                 font=CTkFont(family="Font Awesome 6 Free", size=24),
                 command=self.toggle_panel,
-                fg_color=COLOR_BARRA_SUPERIOR,
+                fg_color=self.barra_superior.cget("fg_color"),  # ← hereda dinámicamente
                 text_color="white",
                 width=45,
-                height=40  # ⬅️ Altura más pequeña que 100
+                height=40
             )
             self.buttonMenuLateral.pack(side=ctk.LEFT, padx=10, pady=(0, 0))  # Centrado vertical con padding
 
@@ -84,8 +85,8 @@ class FormularioInicio(ctk.CTk):
 
             buttons_info = [
                 ("Inicio", "\ue3af", self.buttonPausas, self.abrir_panel_inicio),
-                ("Configuración", "\uf013", self.buttonConfig, self.abrir_panel_en_construccion),
-                ("Ayuda", "\uf059", self.buttonAyuda, self.abrir_panel_graficas)
+                ("Configuración", "\uf013", self.buttonConfig, self.abrir_panel_configuracion),
+                ("Ayuda", "\uf059", self.buttonAyuda, self.abrir_panel_ayuda)
             ]
 
             for text, icon, button, comando in buttons_info:
@@ -95,6 +96,7 @@ class FormularioInicio(ctk.CTk):
         controles_barra_superior()
         controles_menu_lateral()
         self.controles_cuerpo()
+        self.tema_actual = "light"
 
     def controles_cuerpo(self):
         font_negrilla = ctk.CTkFont(weight="bold", size=17, family="Questrial")
@@ -225,8 +227,6 @@ class FormularioInicio(ctk.CTk):
             self.grid_columnconfigure(1, weight=1)
             self.menu_lateral.grid(row=1, column=0, sticky="nsew")
 
-
-
     def abrir_panel_inicio(self):
         self.limpiar_panel(self.cuerpo_principal)
         self.controles_cuerpo()
@@ -236,16 +236,42 @@ class FormularioInicio(ctk.CTk):
         formulario = FormularioInformacion(self.cuerpo_principal, self, nombre)  
         formulario.grid(row=0, column=0, sticky="nsew")
 
-
-    def abrir_panel_en_construccion(self):
+    def abrir_panel_configuracion(self):
         self.limpiar_panel(self.cuerpo_principal)
-        formulario_sitio = FormularioConfiguracion(self.cuerpo_principal, self)
+        formulario_sitio = FormularioConfiguracion(self.cuerpo_principal, self, self.tema_actual)
         formulario_sitio.grid(row=0, column=0, sticky="nsew")
 
-    def abrir_panel_graficas(self):
+    def abrir_panel_ayuda(self):
+        self.limpiar_panel(self.cuerpo_principal)
         formulario_graficas = FormularioAyuda(self.cuerpo_principal)
         formulario_graficas.grid(row=0, column=0, sticky="nsew")
 
     def limpiar_panel(self, frame):
         for widget in frame.winfo_children():
             widget.destroy()
+            
+    def actualizar_tema_global(self):
+        modo = self.tema_actual
+
+        # Cambia colores generales
+        if modo == "light":
+            self.barra_superior.configure(fg_color=COLOR_BARRA_SUPERIOR)
+            self.menu_lateral.configure(fg_color=COLOR_MENU_LATERAL)
+            self.cuerpo_principal.configure(fg_color=COLOR_CUERPO_PRINCIPAL)
+            self.buttonMenuLateral.configure(fg_color=COLOR_BARRA_SUPERIOR, text_color="white")
+            for widget in self.barra_superior.winfo_children():
+                if isinstance(widget, (ctk.CTkLabel, ctk.CTkButton)):
+                    widget.configure(text_color="white")
+        else:
+            self.barra_superior.configure(fg_color=COLOR_CUERPO_PRINCIPAL)
+            self.menu_lateral.configure(fg_color=COLOR_BARRA_SUPERIOR)
+            self.cuerpo_principal.configure(fg_color=COLOR_BARRA_SUPERIOR)
+            self.buttonMenuLateral.configure(fg_color=COLOR_CUERPO_PRINCIPAL, text_color="black")
+            for widget in self.barra_superior.winfo_children():
+                if isinstance(widget, (ctk.CTkLabel, ctk.CTkButton)):
+                    widget.configure(text_color="black")
+
+        # Llama manualmente el método actualizar_colores del formulario actual si existe
+        for widget in self.cuerpo_principal.winfo_children():
+            if hasattr(widget, "actualizar_colores"):
+                widget.actualizar_colores(modo)
